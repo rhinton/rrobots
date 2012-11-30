@@ -12,11 +12,11 @@ module ZOrder
 end
 
 class RRobotsGameWindow < Gosu::Window
-  attr_reader :battlefield, :xres, :yres
+  attr_reader :battlefield, :xres, :yres, :update_interval
   attr_accessor :on_game_over_handlers, :boom, :robots, :bullets, :explosions
-  
-  def initialize(battlefield, xres, yres)
-    super(xres, yres, false, 16)
+
+  def initialize(battlefield, xres, yres, update_interval)
+    super(xres, yres, false, update_interval)
     self.caption = 'RRobots'
     @font = Gosu::Font.new(self, BIG_FONT, 24)
     @small_font = Gosu::Font.new(self, SMALL_FONT, 24) #xres/100

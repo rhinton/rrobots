@@ -11,6 +11,7 @@ class OptionsParser
     options.gui = true
     options.timeout = 50000
     options.teams = 8
+    options.framerate = 60
 
     opts = OptionParser.new do |opts|
       opts.banner = "Usage: rrobots [options] file1 file2 ..."
@@ -35,6 +36,10 @@ class OptionsParser
         options.gui = y
       end
 
+      opts.on("--framerate N", Integer, "Run the GUI at N frames per second") do |n|
+        options.framerate = n if n > 0 && n < 1000
+      end
+
       opts.on_tail("-h", "--help", "Show this message") do
         puts opts
         exit
@@ -48,7 +53,7 @@ class OptionsParser
     return options
   end
 end
-    
+
 def run_out_of_gui(battlefield)
   $stderr.puts 'match ends if only 1 bot/team left or dots get here-->|'
 
@@ -60,9 +65,11 @@ def run_out_of_gui(battlefield)
   exit 0
 end
 
-def run_in_gui(battlefield, xres, yres)
+def run_in_gui(battlefield, xres, yres, framerate)
   require 'rrobots/gui'
-  arena = RRobotsGameWindow.new(battlefield, xres, yres)
+  # Convert framerate to approximate millisecond interval
+  update_interval = 1000 / framerate
+  arena = RRobotsGameWindow.new(battlefield, xres, yres, update_interval)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false
   arena.on_game_over{|battlefield|
@@ -145,10 +152,10 @@ $stdout.sync = true
 
 options = OptionsParser.parse!(ARGV)
 robots = ARGV
-battlefield = setup_battlefield(options, robots)  
-  
+battlefield = setup_battlefield(options, robots)
+
 if options.gui
-  run_in_gui(battlefield, options.resolution[0], options.resolution[1])
+  run_in_gui(battlefield, options.resolution[0], options.resolution[1], options.framerate)
 else
   run_out_of_gui(battlefield)
 end

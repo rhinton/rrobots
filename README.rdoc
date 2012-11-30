@@ -76,6 +76,7 @@ To start a match call:
           --timeout N                  Maximum number of ticks for a match
           --teams N                    Splits robots into N teams
           --[no-]gui                   Run the match with the GUI
+          --framerate N                Run the GUI at N frames per second
       -h, --help                       Show this message
 
 If you want to run a tournament call:
