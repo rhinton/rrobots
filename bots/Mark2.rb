@@ -1,4 +1,4 @@
-require_relative 'rrobots/robot.rb'
+require 'rrobots/robot.rb'
 
 class Mark2
    	include Robot

@@ -1,4 +1,4 @@
-require_relative 'rrobot/robot.rb'
+require 'rrobot/robot.rb'
 require 'ostruct'
 
 module RubberRobot
