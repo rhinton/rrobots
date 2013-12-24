@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+$:.unshift File.join(File.dirname(__FILE__), '..', 'bots')
 
 require 'rrobots'
 require 'optparse'
@@ -128,19 +129,19 @@ def setup_battlefield(options, robots)
   robots.map! do |robot|
     begin
       begin
-        require "./"+robot.downcase
+        require robot.downcase
       rescue LoadError
       end
       begin
-        require "./"+robot
+        require robot
       rescue LoadError
-    end
-    in_game_name = File.basename(robot).sub(/\..*$/, '')
-    in_game_name[0] = in_game_name[0,1].upcase
-    team = c / team_divider
-    c += 1
-    robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
-    battlefield << robotrunner
+      end
+      in_game_name = File.basename(robot).sub(/\..*$/, '')
+      in_game_name[0] = in_game_name[0,1].upcase
+      team = c / team_divider
+      c += 1
+      robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
+      battlefield << robotrunner
     rescue Exception => error
       puts 'Error loading ' + robot + '!'
       warn error
