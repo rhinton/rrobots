@@ -15,7 +15,9 @@ module RubberRobot
       @array = @array.first(@n)
     end
     def [](arg)
-      @array[arg] if @array && !@array.empty?
+      if @array && !@array.empty? && arg && arg.integer?
+        @array[arg]
+      end
     end
     def to_a
       @array
