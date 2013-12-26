@@ -71,6 +71,7 @@ class RobotRunner
     @turn_gun_min, @turn_gun_max = -30, 30
     @turn_radar_min, @turn_radar_max = -60, 60
     @accelerate_min, @accelerate_max = -1, 1
+    @speed_min, @speed_max = -8, 8
     @teleport_min, @teleport_max = 0, 100
     @say_max = 256
     @broadcast_max = 16
@@ -176,16 +177,13 @@ class RobotRunner
 
   def move
     @speed += @actions[:accelerate]
-    @speed = 8 if @speed > 8
-    @speed = -8 if @speed < -8
+    @speed = clamp(@speed, @speed_min, @speed_max)
 
     @x += Math::cos(@heading.to_rad) * @speed
     @y -= Math::sin(@heading.to_rad) * @speed
 
-    @x = @size if @x - @size < 0
-    @y = @size if @y - @size < 0
-    @x = @battlefield.width - @size if @x + @size >= @battlefield.width
-    @y = @battlefield.height - @size if @y + @size >= @battlefield.height
+    @x = clamp(@x, 0+@size, @battlefield.width-@size)
+    @y = clamp(@y, 0+@size, @battlefield.height-@size)
   end
 
   def scan

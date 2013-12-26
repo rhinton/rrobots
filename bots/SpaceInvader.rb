@@ -33,6 +33,10 @@ end
 class SpaceInvader
   include Robot
 
+  def puts(*args)
+    # be quiet!!!
+  end
+
   def initialize
     @action_queue = [
       :head_down

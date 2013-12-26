@@ -77,7 +77,7 @@ module Robot
   #your y coordinate, 0...battlefield_height
   attr_state :y
 
-  #accelerate (max speed is 8, max accelerate is 1/-1, negativ speed means moving backwards)
+  #accelerate (max speed is 8, max accelerate is 1/-1, negative speed means moving backwards)
   attr_action :accelerate
 
   #accelerates negativ if moving forward (and vice versa), may take 8 ticks to stop (and you have to call it every tick)

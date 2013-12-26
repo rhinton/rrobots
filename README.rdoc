@@ -61,7 +61,8 @@ the body the gun will follow. In a similar way the radar is mounted on
 the gun. The radar scans everything it sweeps over in a single tick (100 
 degrees if you turn your body, gun and radar in the same direction) but
 will report only the distance of scanned robots, not the angle. If you 
-want more precision you have to turn your radar slower.
+want more precision you have to turn your radar slower.  Finally, to be 
+precise, firing happens first, then turning, then moving, then scanning.
 
 RRobots is implemented in pure ruby using a Gosu ui and should run on all
 platforms that have ruby and Gosu.

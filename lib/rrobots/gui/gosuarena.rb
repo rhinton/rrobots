@@ -27,6 +27,8 @@ class RRobotsGameWindow < Gosu::Window
     init_window
     init_simulation
     @leaderboard = Leaderboard.new(self, @robots)
+    $window = self
+    $battlefield = @battlefield
   end
 
   def on_game_over(&block)
