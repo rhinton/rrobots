@@ -12,13 +12,12 @@ STATE_VARS = ('energy', 'gun_heading', 'gun_heat', 'heading', 'heading',
               'radar_heading', 'time', 'game_over', 'speed', 'x', 'y')
 
 class PyRobot(object):
-    def __init__(self, address='tcp://*:5556'):
-        print address
-        self.init_socket(address)
+    def __init__(self, socket):
+        self.socket = socket
         self.get_setup()
 
     def get_setup(self):
-        msg = self.recv_msg()
+        msg = self.socket.recv_msg()
         try:
             for k in SETUP_VARS:
                 setattr(self, k, msg[k])
@@ -26,15 +25,12 @@ class PyRobot(object):
         except:
             print "problem setting initial setup"
 
-    def get_state(self):
-        return self.recv_msg()
-
     def turn(self):
-        state = self.get_state()
+        state = self.socket.recv_msg()
         commands = self.tick(state)
         if state['game_over']:
             return False
-        self.send_msg(commands)
+        self.socket.send_msg(commands)
         return True
     
     def tick(self, state):
@@ -44,19 +40,15 @@ class PyRobot(object):
         fire, accelerate, turn, turn_gun, turn_radar
         """
         return {'fire': .1, 'turn_gun': 7, 'accelerate':random.uniform(-2,2), 'turn': random.uniform(-10,10)}
-    
-    def init_socket(self, address):
-        raise NotImplementedError
 
+class Socket(object):
     def send_msg(self, msg):
         raise NotImplementedError
-
-    def recv_msg(self):
+    def recv_msg(self, msg):
         raise NotImplementedError
-
-class PyRobotZMQ(PyRobot):
-    # import zmq at the top
-    def init_socket(self, address):
+        
+class ZMQSocket(Socket):
+    def __init__(self, address):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.PAIR)
         self.socket.bind(address)
@@ -69,13 +61,14 @@ class PyRobotZMQ(PyRobot):
         msg = json.loads(self.socket.recv())
         print 'received',msg
         return msg
-
+    
 import socket
-class PyRobotUDP(PyRobot):
-    def init_socket(self, address):
+class UDPSocket(Socket):
+    def __init__(self, address):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         addr, port = address.split(':')
         port = int(port)
+        print 'binding to', (addr, port)
         self.socket.bind((addr, port))
 
     def send_msg(self, msg):
@@ -94,6 +87,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('address', help='address to bind')
     args = parser.parse_args()
-    p = PyRobotUDP(args.address)
+    p = PyRobot(UDPSocket(args.address))
     while p.turn():
         pass
